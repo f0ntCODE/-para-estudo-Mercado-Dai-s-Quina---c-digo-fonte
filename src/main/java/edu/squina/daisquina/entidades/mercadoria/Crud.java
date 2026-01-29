@@ -3,11 +3,11 @@ package edu.squina.daisquina.entidades.mercadoria;
 import java.util.List;
 import java.util.UUID;
 
-public interface Crud<T, DTO> {
+public interface Crud<T> {
 
-    public T criar(DTO dto);
+    public T criar(T dto);
 
-    public T editar(UUID id, DTO dto);
+    public T editar(UUID id, T dto);
 
     public void excluir(UUID id);
 

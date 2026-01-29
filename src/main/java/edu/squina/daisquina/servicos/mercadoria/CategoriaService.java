@@ -2,6 +2,7 @@ package edu.squina.daisquina.servicos.mercadoria;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import edu.squina.daisquina.repositorios.mercadoria.CategoriaRepo;
 import jakarta.transaction.Transactional;
 
 @Service
-public class CategoriaService implements Crud<Categoria, CategoriaDTO>{
+public class CategoriaService implements Crud<CategoriaDTO>{
     
     private  CategoriaRepo categoriaRepo;
     private  CategoriaMapper categoriaMapper;
@@ -31,17 +32,18 @@ public class CategoriaService implements Crud<Categoria, CategoriaDTO>{
      */
     @Override
     @Transactional
-    public Categoria criar(CategoriaDTO dto) {
+    public CategoriaDTO criar(CategoriaDTO dto) {
 
           Categoria categoria = categoriaMapper.paraEntidade(dto);
         System.out.println("Categoria " + dto.getNomeCategoria() + " adicionada");
+        
 
-        return categoriaRepo.save(categoria);
+        return categoriaMapper.paraDTO(categoriaRepo.save(categoria));
     }
 
     @Override
     @Transactional
-    public Categoria editar(UUID id, CategoriaDTO dto) {
+    public CategoriaDTO editar(UUID id, CategoriaDTO dto) {
         try{
             Categoria categoria = categoriaRepo.findById(id)
             .orElseThrow();
@@ -50,7 +52,7 @@ public class CategoriaService implements Crud<Categoria, CategoriaDTO>{
 
             System.out.println("Categoria mudada para " + dto.getNomeCategoria());
 
-            return categoria = categoriaRepo.save(categoria);
+            return categoriaMapper.paraDTO(categoriaRepo.save(categoria));
         
         }catch(Exception ex){
             System.err.println("PROBLEMA AO EDITAR OS DADOS DA CATEGORIA: " + ex.getMessage());
@@ -81,9 +83,22 @@ public class CategoriaService implements Crud<Categoria, CategoriaDTO>{
 
     @Override
     @Transactional
-    public List<Categoria> listarTodos() {
-        return categoriaRepo.findAll();
+    public List<CategoriaDTO> listarTodos() {
 
+        return categoriaRepo.findAll()
+        .stream()
+        .map(categoriaMapper :: paraDTO)
+        .collect(Collectors.toList());
+
+    }
+
+    //auxiliadores
+    @Transactional
+    public Categoria getCategoriaByNome(String nome){
+        Categoria categoria = categoriaRepo.findByNomeCategoria(nome)
+        .orElseThrow();
+
+        return categoria;
     }
     
 }

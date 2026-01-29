@@ -7,7 +7,6 @@ import edu.squina.daisquina.dto.categoria.CategoriaDTO;
 import edu.squina.daisquina.entidades.mercadoria.Categoria;
 
 @Mapper(componentModel = "spring")
-
 public interface CategoriaMapper {
 
     @Mapping(target = "id", ignore = true)
