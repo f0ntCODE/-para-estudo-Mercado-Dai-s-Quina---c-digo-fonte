@@ -30,7 +30,7 @@ public class Mercadoria {
     private BigDecimal preco;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoraiId", nullable = false)
+    @JoinColumn(name = "categoriaId", nullable = false)
     private Categoria categoria;
 
 

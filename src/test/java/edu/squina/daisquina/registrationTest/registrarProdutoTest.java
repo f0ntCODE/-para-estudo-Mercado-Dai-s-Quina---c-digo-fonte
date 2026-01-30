@@ -1,6 +1,7 @@
 package edu.squina.daisquina.registrationTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import edu.squina.daisquina.dto.categoria.CategoriaDTO;
 import edu.squina.daisquina.dto.categoria.MercadoriaDTO;
+import edu.squina.daisquina.entidades.mercadoria.Categoria;
 import edu.squina.daisquina.servicos.mercadoria.CategoriaService;
 import edu.squina.daisquina.servicos.mercadoria.MercadoriaService;
 
@@ -35,17 +37,17 @@ public class registrarProdutoTest {
     @DisplayName("CATEGORIA DEVE SER REGISTRADA COM SUCESSO")
     public void registrarCategoria(){
 
-        CategoriaDTO categoria = persisirCategoria();
+        CategoriaDTO categoria = persisirCategoria("Cozinha");
 
         CategoriaDTO retorno = categoriaService.criar(categoria);
 
-        assertEquals(retorno.getNomeCategoria(), categoria.getNomeCategoria());
+        assertNotNull(retorno.getId());
     }
 
     @Test
     @DisplayName("NOME DA CATEGORIA DEVE SER ALTERADA")
     public void editarNomeCategoria(){
-        CategoriaDTO categoria = persisirCategoria();
+        CategoriaDTO categoria = persisirCategoria("Cozinha");
 
         CategoriaDTO criada = categoriaService.criar(categoria);
 
@@ -60,13 +62,13 @@ public class registrarProdutoTest {
     @Test
     @DisplayName("A MERCADORIA DEVE SER CRIADA")
     public void criarMercadoria(){
-        CategoriaDTO categoria = persisirCategoria();
+        CategoriaDTO categoria = persisirCategoria("Cozinha");
         CategoriaDTO categoriaCriada = categoriaService.criar(categoria);
 
         String descricao = "Fogão 4 bocas à gás!";
         BigDecimal preco = BigDecimal.valueOf(850.45);
 
-        MercadoriaDTO mercadoria = new MercadoriaDTO("Fogão", descricao, null, preco, categoriaCriada);
+        MercadoriaDTO mercadoria = new MercadoriaDTO("Fogão", descricao, null, preco, categoriaCriada.getId());
 
         MercadoriaDTO retorno = mercadoriaService.criar(mercadoria);
 
@@ -74,11 +76,41 @@ public class registrarProdutoTest {
 
     }
 
+    @Test
+    @DisplayName("DADO DA MERCADORIA DEVE SER EDITADO")
+    public void editarMercadoria(){
+        MercadoriaDTO mercadoriaDTO = persistirMercadoria();
+        MercadoriaDTO mercadoriaCriada = mercadoriaService.criar(mercadoriaDTO);
+
+        //criando novos
+
+        CategoriaDTO novaCategoriaDTO = persisirCategoria("Cozinha");
+        CategoriaDTO novaCategoriaPersistida = categoriaService.criar(novaCategoriaDTO);
+
+        MercadoriaDTO mercadoriaAtualizada = new MercadoriaDTO("Grelha", "descricao", null, BigDecimal.TEN, novaCategoriaPersistida.getId());
+
+        MercadoriaDTO retorno = mercadoriaService.editar(mercadoriaCriada.getId(), mercadoriaAtualizada);
+
+
+        assertNotEquals(retorno.getNome(), "Fogão");
+    }
+
     //helper
-    private CategoriaDTO persisirCategoria(){
-        CategoriaDTO categoriaDTO = new CategoriaDTO("Cozinha");
+    private CategoriaDTO persisirCategoria(String categoria){
+        CategoriaDTO categoriaDTO = new CategoriaDTO(categoria);
 
         return categoriaDTO;
+    }
+
+    private MercadoriaDTO persistirMercadoria(){
+
+        CategoriaDTO categoriaDTO = persisirCategoria("Cozinha"); //categoria Cozinha
+        CategoriaDTO categoriaCriada = categoriaService.criar(categoriaDTO);
+
+
+        MercadoriaDTO mercadoria = new MercadoriaDTO("Fogão", "descricao", null, BigDecimal.TEN, categoriaCriada.getId());
+
+        return mercadoria;
     }
 
 

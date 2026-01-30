@@ -48,12 +48,18 @@ public class CategoriaService implements Crud<CategoriaDTO>{
             Categoria categoria = categoriaRepo.findById(id)
             .orElseThrow();
 
-            categoria.setNomeCategoria(dto.getNomeCategoria());
+            if(!dto.getNomeCategoria().equals(categoria.getNomeCategoria())){
+                categoria.setNomeCategoria(dto.getNomeCategoria());
+                
+                System.out.println("Categoria mudada para " + dto.getNomeCategoria());
+                
+                return categoriaMapper.paraDTO(categoriaRepo.save(categoria));
 
-            System.out.println("Categoria mudada para " + dto.getNomeCategoria());
-
-            return categoriaMapper.paraDTO(categoriaRepo.save(categoria));
-        
+            }else{
+                System.out.println("O nome da categoria não foi mudado: sem alteração");
+                return categoriaMapper.paraDTO(categoria);
+            }
+                   
         }catch(Exception ex){
             System.err.println("PROBLEMA AO EDITAR OS DADOS DA CATEGORIA: " + ex.getMessage());
             

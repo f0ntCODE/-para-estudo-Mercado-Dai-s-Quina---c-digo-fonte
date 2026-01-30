@@ -27,13 +27,13 @@ public class CategoriaController {
     }
 
     @PostMapping("/criar")
-    public ResponseEntity<Categoria> criar(@Valid @RequestBody CategoriaDTO categoriaDTO){
+    public ResponseEntity<CategoriaDTO> criar(@Valid @RequestBody CategoriaDTO categoriaDTO){
 
         return ResponseEntity.ok(categoriaService.criar(categoriaDTO));
     }
 
     @PatchMapping("/editar/{id}")
-    public ResponseEntity<Categoria> editar(@PathVariable UUID id, 
+    public ResponseEntity<CategoriaDTO> editar(@PathVariable UUID id, 
         @Valid @RequestBody CategoriaDTO categoriaDTO){
 
         return ResponseEntity.ok(categoriaService.editar(id, categoriaDTO));

@@ -30,17 +30,17 @@ public class MercadoriaDTO {
     private BigDecimal preco;
 
     @NotBlank(message = "A mercadoria deve ter uma categoria associada")
-    private CategoriaDTO categoria;
+    private UUID categoriaId;
 
     public MercadoriaDTO(String nome,
             String descricao, String imagem,
             BigDecimal preco,
-            CategoriaDTO categoria) {
+            UUID categoriaId) {
         this.nome = nome;
         this.descricao = descricao;
         this.imagem = imagem;
         this.preco = preco;
-        this.categoria = categoria;
+        this.categoriaId = categoriaId;
     }
 
     
